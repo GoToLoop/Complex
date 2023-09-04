@@ -1,0 +1,53 @@
+{
+  "name": "complex",
+  "version": "1.0.0",
+  "author": "Peter Lager",
+  "license": "MIT",
+  "description": "A complex number class including many trig functions.",
+  "main": "complex.js",
+  "module": "complex.mjs",
+  "types": "typings/complex.d.mts",
+  "scripts": {
+    "preinstall": "cd scripts && dev-packs",
+    "start": "cd scripts && run",
+    "test": "node tests/test.mjs",
+    "check": "tsd -f tests/complex.test-d.mts",
+    "compile": "tsc",
+    "tsdoc": "typedoc",
+    "jsdoc": "jsdoc -c jsdoc.json",
+    "all": "run-s compile check && run-p tsdoc jsdoc"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "npm-run-all": "^4",
+    "servor": "^4",
+    "typescript": "^5",
+    "jsdoc": "^4",
+    "typedoc": "^1",
+    "tsd": "x"
+  },
+  "peerDependenciesMeta": {
+    "npm-run-all": {
+      "optional": true
+    },
+    "servor": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    },
+    "jsdoc": {
+      "optional": true
+    },
+    "typedoc": {
+      "optional": true
+    },
+    "tsd": {
+      "optional": true
+    }
+  }
+}

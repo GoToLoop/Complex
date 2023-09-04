@@ -1,0 +1,9 @@
+{
+  "source": {
+    "include": ["complex.mjs"],
+    "includePattern": ".+\\.[m|c]?[j|t]s(doc|x)?$"
+  },
+  "opts": {
+    "destination": "docs/jsdoc"
+  }
+}

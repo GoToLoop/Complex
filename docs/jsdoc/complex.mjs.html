@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: complex.mjs</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: complex.mjs</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// @ts-check
+
+/**
+ * @typedef {{real: number, imag: number}} Cobj
+ * An object representing a complex number with real and imaginary parts.
+ */
+
+/**
+ * @typedef {Int8Array | Uint8Array | Uint8ClampedArray | Int16Array |
+ * Uint16Array | Int32Array | Uint32Array | Float32Array | Float64Array |
+ * BigInt64Array | BigUint64Array} TypedArray
+ * A union type representing all possible TypedArrays.
+ */
+
+/**
+ * @template {Typed&lt;TypedArray>} T
+ * @typedef {T} Typed A generic type representing a TypedArray.
+ */
+
+/**
+ * @template T
+ * @typedef {function(new:T, ...any)} Newable
+ * A constructor type that can be instantiated with the `new` keyword.
+ */
+
+/**
+ * @typedef {function(new:Complex, number, number)} TC
+ * A constructor for typeof Complex.
+ * @param {number} [re=0] The real part of the complex number.
+ * @param {number} [im=0] The imaginary part of the complex number.
+ */
+
+/**
+ * @template {Ctor&lt;TC>} C
+ * @typedef {C} Ctor A generic type representing a `Complex` constructor.
+ */
+
+/**
+ * @template {TC} C
+ * @typedef {InstanceType&lt;C>} Cinst
+ * A generic type representing an instance of a constructor `Complex`.
+ */
+
+/**
+ * @template {Ctor&lt;TC>} C
+ * @typedef {Ctor&lt;C> | {} | void} Cvoid
+ * A union type representing either a constructor `Complex`, an object, or void.
+ * Used to hint that a static method can also be invoked "bare".
+ */
+
+/**
+ * Type of callback Complex.compare().
+ * @callback Compare
+ * @param {Complex} a The first complex number to compare.
+ * @param {Cobj} b The second complex number to compare.
+ * @return {number} -1 if a &lt; b, 0 if a == b, or +1 if a > b.
+ */
+
+/**
+ * An immutable complex number class with real and imaginary parts.
+ * @class Complex
+ */
+export default class Complex {
+    /**
+     * The cached hashcode for this complex number.
+     * @type {number | null}
+     */
+    #hashCode = null;
+
+    /**
+     * Create a new instance of the Complex class.
+     * @constructor
+     * @param {number} [re=0] The real part of the complex number.
+     * @param {number} [im=0] The imaginary part of the complex number.
+     */
+    constructor(re = 0, im = 0) {
+        /**
+         * The real part of the complex number.
+         * @readonly
+         * @const
+         * @type {number}
+         */
+        this.real = +re || 0;
+
+        /**
+         * The imaginary part of the complex number.
+         * @readonly
+         * @const
+         * @type {number}
+         */
+        this.imag = +im || 0;
+
+        /**
+         * The constructor function for this instance.
+         * @type {Newable&lt;this> &amp; typeof Complex}
+         */
+        this.constructor;
+
+        /**
+         * The prototype object of this instance.
+         * @type {this}
+         */
+        this.__proto__;
+
+        /*
+         * Define the real &amp; imag properties of this Complex object as readonly.
+         * And thus making class Complex itself immutable:
+         */
+        Object.defineProperties(this, Complex._IMMUTABLE);
+    }
+
+    /**
+     * A property descriptor object that defines a property as read-only
+     * by setting its attribute writable to false.
+     * @protected
+     * @static
+     * @readonly
+     * @const {PropertyDescriptor}
+     */
+    static _READONLY = Object.freeze({ writable: false });
+
+    /**
+     * Map of property descriptors that define the real &amp; imag properties of a
+     * Complex object as read-only; so instances of class Complex are immutable.
+     * @protected
+     * @static
+     * @readonly
+     * @const {PropertyDescriptorMap}
+     */
+    static _IMMUTABLE = Object.freeze({
+        real: this._READONLY, imag: this._READONLY
+    });
+
+    /**
+     * Property's name to check if an object is a TypedArray.
+     * @protected
+     * @static
+     * @readonly
+     * @const {'BYTES_PER_ELEMENT'}
+     */
+    static _TYPED = 'BYTES_PER_ELEMENT';
+
+    /**
+     * Static property's name to check if some constructor is of type Complex.
+     * @protected
+     * @static
+     * @readonly
+     * @const {'fromRI'}
+     */
+    static _METHOD = 'fromRI';
+
+    /**
+     * A Float64Array buffer used to store the binary representation of the
+     * real or imaginary part of a complex number for hashcode computation.
+     * @protected
+     * @static
+     * @readonly
+     * @type {Float64Array}
+     */
+    static _hashFBuf = new Float64Array(1);
+
+    /**
+     * A Uint8Array buffer view that shares the same memory block as _hashFBuf,
+     * used to access the individual bytes of the real or imaginary part of a
+     * complex number for hashcode computation.
+     * @protected
+     * @static
+     * @readonly
+     * @type {Uint8Array}
+     */
+    static _hashIBuf = new Uint8Array(this._hashFBuf.buffer);
+
+    /**
+     * A complex number representing zero.
+     * @static
+     * @readonly
+     * @const {Complex}
+     */
+    static ZERO = new this;
+
+    /**
+     * A complex number representing 1 + 0i.
+     * @static
+     * @readonly
+     * @const {Complex}
+     */
+    static _1_0i = new this(1, 0);
+
+    /**
+     * A complex number representing -1 + 0i.
+     * @static
+     * @readonly
+     * @const {Complex}
+     */
+    static _1_0i_neg = new this(-1, 0);
+
+    /**
+     * A complex number representing 0 + 1i.
+     * @static
+     * @readonly
+     * @const {Complex}
+     */
+    static _0_1i = new this(0, 1);
+
+    /**
+     * A complex number representing 0 - 1i.
+     * @static
+     * @readonly
+     * @const {Complex}
+     */
+    static _0_1i_neg = new this(0, -1);
+
+    /**
+     * Pi. Ratio of the circumference of a circle to its diameter.
+     * @static
+     * @readonly
+     * @const {3.141592653589793}
+     */
+    static PI = /** @type {3.141592653589793} */ (Math.PI);
+
+    /**
+     * Tau. Ratio of the circumference of a circle to its radius (2pi).
+     * @static
+     * @readonly
+     * @const {6.283185307179586}
+     */
+    static TAU = /** @type {6.283185307179586} */ (2 * Complex.PI);
+
+    /**
+     * The conversion factor from radians to degrees (180 / Math.PI).
+     * @static
+     * @readonly
+     * @const {57.29577951308232}
+     */
+    static RAD_TO_DEG = /** @type {57.29577951308232} */ (180 / Complex.PI);
+
+    /**
+     * The conversion factor from degrees to radians (Math.PI / 180).
+     * @static
+     * @readonly
+     * @const {.017453292519943295}
+     */
+    static DEG_TO_RAD = /** @type {.017453292519943295} */ (Complex.PI / 180);
+
+    /**
+     * The default maximum difference allowed when testing complex numbers.
+     */
+    static #epsilon = 1E-8;
+
+    /**
+     * Get the default maximum difference allowed when testing complex numbers.
+     * @static
+     * @return {number} The maximum difference allowed.
+     */
+    static get epsilon() {
+        return Complex.#epsilon;
+    }
+
+    /**
+     * Set the default maximum difference allowed when testing complex numbers.
+     * @static
+     * @param {number} norm The max diff allowed. Must be > 0 and &lt; 1.
+     * @throws {RangeError} If epsilon to be set is &lt;= 0 or >=1.
+     */
+    static set epsilon(norm) {
+        if (norm &lt;= 0 || norm >= 1)
+            throw RangeError('Range must be between 0 &amp; 1 (exclusive)!');
+
+        Complex.#epsilon = +norm;
+    }
+
+    /**
+     * Convert an angle in radians to degrees.
+     * @static
+     * @param {number} rad The angle in radians.
+     * @return {number} The angle in degrees.
+     */
+    static toDeg(rad) {
+        return rad * Complex.RAD_TO_DEG;
+    }
+
+    /**
+     * Convert an angle in degrees to radians.
+     * @static
+     * @param {number} deg The angle in degrees.
+     * @return {number} The angle in radians.
+     */
+    static toRad(deg) {
+        return deg * Complex.DEG_TO_RAD;
+    }
+
+    /**
+     * Callback for comparing 2 complex numbers by their real &amp; imaginary parts.
+     * @static
+     * @param {Complex} a The first complex number to compare.
+     * @param {Cobj} b The second complex number to compare.
+     * @return {number} -1 if a &lt; b, 0 if a == b, or +1 if a > b.
+     */
+    static compare(a, b) {
+        return a.compareTo(b);
+    }
+
+    /**
+     * Returns a new array with the elements sorted by their real value.
+     * Numbers w/ same real value are then sorted by their imaginary value.
+     * The original array or iterable is unchanged.
+     * @static
+     * @template {Cinst&lt;TC>} I Instance of Complex type.
+     * @param {Iterable&lt;I>} z The original array or iterable.
+     * @param {Compare} [sort=Complex.compare] The sorting callback.
+     * @return {I[]} A new sorted array.
+     */
+    static sort(z, sort = Complex.compare) {
+        return [...z].sort(sort);
+    }
+
+    /**
+     * @template {Typed&lt;TypedArray>} T Specific type of the passed TypedArray.
+     * @overload
+     * @param {T} arr The TypedArray to clone.
+     * @return {T} A new TypedArray of same datatype containing
+     * the elements of the input TypedArray.
+     *
+    */
+    /**
+     * @template A The type of elements in the Array or Iterable object.
+     * @overload
+     * @param {Iterable&lt;A>} arr The Array or Iterable object to clone.
+     * @return {A[]} A new Array containing the elements of the input Array
+     * or Iterable object.
+     */
+    /**
+     * @static
+     * @param {T | Iterable&lt;A>} arr Array, TypedArray or Iterable to clone.
+     * @description Clones an Array, a TypedArray or an Iterable object
+     * as an Array or TypedArray of same datatype.
+     */
+    static arrClone(arr) {
+        return Complex._TYPED in arr ? arr.slice() : [...arr];
+    }
+
+    /**
+     * Check if a function is a Complex datatype constructor.
+     * @protected
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @param {Cvoid&lt;C>} c The constructor function to check.
+     * @return {c is Newable&lt;Cinst&lt;C>>}
+     * True if param c is or inherits from Complex class.
+     */
+    static _isComplex(c) {
+        return !!c &amp;&amp; Complex._METHOD in c;
+    }
+
+    /**
+     * Get input constructor c if typeof Complex; or fallback to Complex.
+     * @protected
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @template {Newable&lt;Cinst&lt;C>>} N Constructor for typeof Complex.
+     * @param {Cvoid&lt;C>} c The constructor function to verify.
+     * @return {N} Param c if type Complex; otherwise a Complex constructor.
+     */
+    static _ctor(c) {
+        return /** @type {N} */ (Complex._isComplex(c) ? c : this || Complex);
+    }
+
+    /**
+     * Create a new instance of a given Complex constructor function.
+     * @protected
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @param {Cvoid&lt;C>} c An existing Complex constructor.
+     * @param {*} args Real &amp; imaginary number parts.
+     * @return {Cinst&lt;C>} A new instance of a complex number.
+     */
+    static _new(c, ...args) {
+        return new (this._ctor(c))(...args);
+    }
+
+    /**
+     * Return a complex number given values for the real &amp; imaginary parts.
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @this {Cvoid&lt;C>} Constructor for a Complex object or its subclass.
+     * @param {number} [re=0] The real part.
+     * @param {number} [im=0] The imaginary part.
+     * @param {*} _args Extended parameters.
+     * @return {Cinst&lt;C>} The complex number of given real &amp; imaginary parts.
+     */
+    static fromRI(re, im, ..._args) {
+        return Complex._new(this, re, im, ..._args);
+    }
+
+    /**
+     * Return a new complex number using given object's props real &amp; imag.
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @this {Cvoid&lt;C>} Constructor for a Complex object or its subclass.
+     * @param {Cobj} z The Complex object to copy from.
+     * @param {*} _args Extended parameters.
+     * @return {Cinst&lt;C>} Duplicate of the given Complex object.
+     */
+    static fromZ({ real, imag }, ..._args) {
+        return Complex._new(this, real, imag, ..._args);
+    }
+
+    /**
+     * Return a complex number given polar coordinates.
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @this {Cvoid&lt;C>} Constructor for a Complex object or its subclass.
+     * @param {number} mod The length of the complex number.
+     * @param {number} rad The angle subtended by the number.
+     * @param {*} _args Extended parameters.
+     * @return {Cinst&lt;C>} Complex of given length &amp; orientation.
+     */
+    static fromPolar(mod, rad, ..._args) {
+        const re = mod * Math.cos(rad), im = mod * Math.sin(rad);
+        return Complex._new(this, re, im, ..._args);
+    }
+
+    /**
+     * Return a complex number of a given size but random orientation.
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @this {Cvoid&lt;C>} Constructor for a Complex object or its subclass.
+     * @param {number} [mod=1] The length of the complex number.
+     * @param {*} _args Extended parameters.
+     * @return {Cinst&lt;C>} Complex of given length &amp; random orientation.
+     */
+    static fromRandom(mod = 1, ..._args) {
+        const
+          ang = Complex.TAU * Math.random(),
+          re = mod * Math.cos(ang),
+          im = mod * Math.sin(ang);
+
+        return Complex._new(this, re, im, ..._args);
+    }
+
+    /**
+     * Given an array of complex numbers return a new array containing a clone
+     * of those that represent real numbers. The original array is unchanged.
+     * @static
+     * @template {Ctor&lt;TC>} C Extends typeof Complex.
+     * @this {Cvoid&lt;C>} Constructor for a Complex object or its subclass.
+     * @param {Iterable&lt;Complex>} z The original array or iterable.
+     * @param {number} [epsilon=Complex.epsilon] Max diffference allowed.
+     * @param {*} _args Extended parameters.
+     * @return {Array&lt;Cinst&lt;C>>} Array of Complex representing real numbers.
+     */
+    static filterRealRoots(z, epsilon = Complex.#epsilon, ..._args) {
+        const ctor = Complex._ctor(this), r = [];
+
+        for (const c of z)
+            c.isReal(epsilon) &amp;&amp; r.push(new ctor(c.real, 0, ..._args));
+
+        return r;
+    }
+
+    /**
+     * If the original array contains more than 1 element the new array is
+     * returned with duplicates removed leaving just unique vales.
+     * In all cases a clone is returned and the original array is unchanged.
+     * @static
+     * @template {Cinst&lt;TC>} I Instance of Complex type.
+     * @param {Iterable&lt;I>} z The original array or iterable.
+     * @param {number} [epsilon=Complex.epsilon] Max diffference allowed.
+     * @return {I[]} A new array with duplicates removed.
+     */
+    static removeDuplicates(z, epsilon = Complex.#epsilon) {
+        const zs = [...z], len = zs.length;
+        if (len &lt; 2) return zs; // Can't have duplicates, so exit now!
+
+        const nz = [ zs.sort(Complex.compare)[0] ];
+        var i = 0, idx = 0;
+
+        while (++i &lt; len) {
+            const c = zs[i];
+            if (!c.equals(nz[idx], epsilon)) nz.push(c), ++idx;
+        }
+
+        return nz;
+    }
+
+    /**
+     * Compute the absolute value (modulus or magnitude) of this complex number.
+     * @return {number} The absolute length value of this complex number.
+     */
+    abs() {
+        return Math.sqrt(this.real * this.real + this.imag * this.imag);
+        // return Math.hypot(this.real, this.imag); // Likely slower!
+    }
+
+    /**
+     * Compute the squared absolute value of this complex number.
+     * @return {number} The squared absolute value of this complex number.
+     */
+    abs_squared() {
+        return this.real * this.real + this.imag * this.imag;
+    }
+
+    /**
+     * Add another complex number or a real number to this complex number.
+     * @param {Cobj | number} n The complex or real number to add.
+     * @return {this} A new complex number representing the sum.
+     */
+    add(n) {
+        const { constructor, real, imag } = this;
+
+        return typeof n == 'object' ?
+            new constructor(+n.real + real, +n.imag + imag) :
+            new constructor(+n + real, imag);
+    }
+
+    /**
+     * Calculate the inverse cosine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    acos() {
+        const z = this.squared().sub(1).sqrt().add(this).log().
+                       mult(Complex._0_1i_neg);
+
+        return z.real &lt; 0 &amp;&amp; z.negate() || z;
+    }
+
+    /**
+     * Calculate the inverse hyperbolic cosine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    acosh() {
+        const z = this.squared().sub(Complex._1_0i).sqrt().add(this).log();
+        return z.real &lt; 0 &amp;&amp; z.negate() || z;
+    }
+
+    /**
+     * Calculate the argument (phase) of this complex number in radians.
+     * @return {number} The argument of this complex number in radians.
+     */
+    arg() {
+        return Math.atan2(this.imag, this.real);
+    }
+
+    /**
+     * Calculate the inverse sine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    asin() {
+        const t2 = this.squared().sub(Complex._1_0i).negate().sqrt();
+        return this.mult(Complex._0_1i).add(t2).log().mult(Complex._0_1i_neg);
+    }
+
+    /**
+     * Calculate the inverse hyperbolic sine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    asinh() {
+        return this.squared().add(Complex._1_0i).sqrt().add(this).log();
+    }
+
+    /**
+     * Calculate the inverse tangent of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    atan() {
+        const _01 = this.constructor.fromZ(Complex._0_1i);
+        return _01.half().mult( _01.add(this).div( _01.sub(this) ).log() );
+    }
+
+    /**
+     * Calculate the inverse hyperbolic tangent of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    atanh() {
+        const _10 = this.constructor.fromZ(Complex._1_0i);
+        return _10.add(this).div( _10.sub(this) ).log().half();
+    }
+
+    /**
+     * Calculate the cube root of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    cbrt() {
+        const { cbrt, atan2, cos, sin } = Math, mag = cbrt( this.abs() );
+        var theta = atan2(this.imag, this.real);
+        if (theta &lt; 0) theta += Complex.TAU;
+        return new this.constructor(cos(theta /= 3) * mag, sin(theta) * mag);
+    }
+
+    /**
+     * Creates a copy of the same type as this complex instance.
+     * Although it's unnecessary given a Complex object is already immutable.
+     * @return {this} A new complex object with the same real and imaginary
+     * values as this instance.
+     */
+    clone() {
+        return new this.constructor(...this);
+    }
+
+    /**
+     * Calculate the conjugate of this complex number.
+     * @return {this} A new complex number representing the conjugate.
+     */
+    conj() {
+        return new this.constructor(this.real, -this.imag);
+    }
+
+    /**
+     * This method compares this complex number with another.
+     * The main purpose of this is to define an appropriate sort order.
+     * Returns:
+     *  Zero if the numbers are the same when using the equals method.
+     *  Negative if considered less than z.
+     *  Positive if considered larger than z.
+     * @param {Cobj} z the complex number to compare with.
+     * @return {number} -1, 0 or +1
+     */
+    compareTo(z) {
+        return this.equals(z) ? 0 : this.real - z.real || this.imag - z.imag;
+    }
+
+    /**
+     * Calculate the cosine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    cos() {
+        const t = this.mult(Complex._0_1i);
+        return t.exp().add( t.negate().exp() ).half();
+    }
+
+    /**
+     * Calculate the cosecant of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    cosec() {
+        return this.sin().pow(-1);
+    }
+
+    /**
+     * Calculate the hyperbolic cosecant of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    cosech() {
+        return this.sinh().pow(-1);
+    }
+
+    /**
+     * Calculate the hyperbolic cosine of this complex number.
+     * @return {this} A new complex number representing the result.
+     */
+    cosh() {
+        return this.exp().add( this.negate().exp() ).half();
+    }
+
+    /**
+     * Returns the cotangent of this complex number.
+     * @return {this} The cotangent of this complex number.
+     */
+    cot() {
+        return this.cos().div( this.sin() );
+    }
+
+    /**
+     * Returns the hyperbolic cotangent of this complex number.
+     * @return {this} The hyperbolic cotangent of this complex number.
+     */
+    coth() {
+        return this.cosh().div( this.sinh() );
+    }
+
+    /**
+     * Returns the cube of this complex number.
+     * @return {this} The cube of this complex number.
+     */
+    cubed() {
+        const
+          { constructor, real, imag } = this,
+
+          re = real**3 - 3 * real * imag * imag,
+          im = 3 * real * real * imag**4;
+
+        return new constructor(re, im);
+    }
+
+    /**
+     * Divides this complex number by another complex number or a scalar.
+     * @param {(Cobj | number)} n The divisor.
+     * @return {this} The quotient of the division.
+     */
+    div(n) {
+        const { constructor, real, imag } = this;
+
+        if (typeof n == 'object') {
+            const
+              { real: r, imag: i } = n,
+              m = r*r + i*i;
+
+            var
+              re = (r * real + i * imag) / m,
+              im = (r * imag - i * real) / m;
+        }
+
+        else var re = real / n, im = imag / n;
+
+        return new constructor(re, im);
+    }
+
+    /**
+     * Checks if this complex number is equal to another complex number within
+     * a given tolerance.
+     * @param {Cobj} z The other complex number to compare with.
+     * @param {number} [epsilon=Complex.epsilon] The tolerance for equality.
+     * @return {boolean} True if the two numbers are equal within the given
+     * tolerance, false otherwise.
+     */
+    equals({ real, imag }, epsilon = Complex.#epsilon) {
+        return Math.abs(this.real - real) &lt; epsilon &amp;&amp;
+               Math.abs(this.imag - imag) &lt; epsilon;
+    }
+
+    /**
+     * Returns the exponential of this complex number.
+     * @return {this} The exponential of this complex number.
+     */
+    exp() {
+        const
+          a = Math.exp(this.real),
+          b = Math.cos(this.imag),
+          c = Math.sin(this.imag);
+
+        return this.constructor.fromZ(Complex._0_1i).mult(c).add(b).mult(a);
+    }
+
+    /**
+     * Generates a hashcode for this complex number.
+     * @param {number} [hash=17] Optional initial seed for the hashcode.
+     * @return {number} The hashcode for this complex number.
+     */
+    hashCode(hash = 0) {
+        if (!hash &amp;&amp; this.#hashCode != null) return this.#hashCode;
+
+        hash = ~~hash || 17;
+
+        for (const z of this) { // Iterate over [real &amp; imag] values.
+            Complex._hashFBuf[0] = z;
+            for (const int8 of Complex._hashIBuf) hash = hash * 31 + int8 | 0;
+        }
+
+        return this.#hashCode = hash;
+    }
+
+    /**
+     * Checks if this complex number is real within a given tolerance.
+     * @param {number} [epsilon=Complex.epsilon] The tolerance for checking
+     * if the imaginary part is zero.
+     * @return {boolean} True if the imaginary part is zero within the given
+     * tolerance, false otherwise.
+     */
+    isReal(epsilon = Complex.#epsilon) {
+        return Math.abs(this.imag) &lt;= epsilon;
+    }
+
+    /**
+     * Checks if this complex number is zero within a given tolerance.
+     * @param {number} [epsilon=Complex.epsilon] The tolerance for checking
+     * if both the real and imaginary parts are zero.
+     * @return {boolean} True if both the real and imaginary parts are zero
+     * within the given tolerance, false otherwise.
+     */
+    isZero(epsilon = Complex.#epsilon) {
+        return Math.abs(this.real) &lt; epsilon &amp;&amp; Math.abs(this.imag) &lt; epsilon;
+    }
+
+    /**
+     * Returns the natural logarithm of this complex number.
+     * @return {this} The natural logarithm of this complex number.
+     */
+    log() {
+        const re = Math.log( this.abs() );
+        const im = this.real &lt; 0 &amp;&amp; !this.imag ? Complex.PI : this.arg();
+        return new this.constructor(re, im);
+    }
+
+    /**
+     * Multiplies this complex number by another complex number or a scalar.
+     * @param {(Cobj | number)} n The multiplicand.
+     * @return {this} The product of the multiplication.
+     */
+    mult(n) {
+        const { constructor, real, imag } = this;
+
+        if (typeof n == 'object') return new constructor(
+            n.real * real - n.imag * imag,
+            n.imag * real + n.real * imag
+        );
+
+        return new constructor(n * real, n * imag);
+    }
+
+    /**
+     * Returns the half (divided by 2) of this complex number.
+     * @return {this} Half of this complex number.
+     */
+    half() {
+        return this.mult(.5);
+    }
+
+    /**
+     * Returns the negation of this complex number.
+     * @return {this} The negation of this complex number.
+     */
+    negate() {
+        return this.mult(-1);
+    }
+
+    /**
+     * Returns the normalization of this complex number.
+     * @return {this} The normalization of this complex number.
+     */
+    norm() {
+        return this.div( this.abs() );
+    }
+
+    /**
+     * Returns the power of this complex number raised to another complex
+     * number or a scalar.
+     * @param {(Cobj | number)} n The exponent.
+     * @return {this} Power of this complex number raised to given exponent.
+     */
+    pow(n) {
+        return this.log().mult(n).exp();
+    }
+
+    /**
+     * Returns the nth roots of this complex number (min 1).
+     * @param {number} [n=1] The degree of the roots.
+     * @return {this[]} An array containing the nth roots of this
+     * complex number.
+     */
+    roots(n = 1) {
+        const
+          { constructor, real, imag } = this,
+
+          delta = Complex.TAU / (n = ~~Math.abs(n) || 1),
+          arg = Math.atan2(imag, real) / n,
+          mod = Math.pow(this.modSq(), 1 / n);
+
+        return Array.from(
+            { length: n },
+            (_, r) => constructor.fromPolar(mod, r * delta + arg)
+        );
+    }
+
+    /**
+     * Returns the sine of this complex number.
+     * @return {this} The sine of this complex number.
+     */
+    sin() {
+        const t1 = this.mult(Complex._0_1i).exp().mult(Complex._0_1i_neg);
+        const t2 = this.mult(Complex._0_1i_neg).exp().mult(Complex._0_1i_neg);
+        return t1.sub(t2).half();
+    }
+
+    /**
+     * Returns the hyperbolic sine of this complex number.
+     * @return {this} The hyperbolic sine of this complex number.
+     */
+    sinh() {
+        return this.exp().sub( this.negate().exp() ).half();
+    }
+
+    /**
+     * Returns the square of this complex number.
+     * @return {this} The square of this complex number.
+     */
+    squared() {
+        const
+          { constructor, real, imag } = this,
+
+          re = (real + imag) * (real - imag), // Same as: real*real - imag*imag
+          im = 2 * real * imag;
+
+        return new constructor(re, im);
+    }
+
+    /**
+     * Returns the square root of this complex number.
+     * @return {this} The square root of this complex number.
+     */
+    sqrt() {
+        const
+          { constructor, real, imag } = this,
+
+          abs = this.abs(),
+          re = Math.sqrt(.5 * (abs + real)),
+          im = Math.sqrt(.5 * (abs - real));
+
+        return new constructor(re, imag >= 0 ? im : -im);
+    }
+
+    /**
+     * Subtracts another complex or a real number from this complex number.
+     * @param {(Cobj | number)} n The subtrahend.
+     * @return {this} The difference between the two numbers.
+     */
+    sub(n) {
+        const { constructor, real, imag } = this;
+
+        return typeof n == 'object' ?
+            new constructor(real - n.real, imag - n.imag) :
+            new constructor(real - n, imag);
+    }
+
+    /**
+     * Returns the tangent of this complex number.
+     * @return {this} The tangent of this complex number.
+     */
+    tan() {
+        return this.sin().div( this.cos() );
+    }
+
+    /**
+     * Returns the hyperbolic tangent of this complex number.
+     * @return {this} The hyperbolic tangent of this complex number.
+     */
+    tanh() {
+        return this.sinh().div( this.cosh() );
+    }
+
+    /**
+     * Prints this complex number to the console.
+     * @param {number} [precision=16] Number of significant digits to display.
+     * @return {this} This complex number.
+     * @chainable
+     */
+    print(precision) {
+        console.log( this.$(precision) );
+        return this;
+    }
+
+    /**
+     * Returns a string representation of this complex number.
+     * @param {number} [precision=16] Number of significant digits to display.
+     * @return {string} A string representation of this complex number.
+     */
+    $(precision = 16) {
+        const
+          sgn = this.imag &lt; 0 &amp;&amp; '-' || '+',
+          rep = this.real.toPrecision(precision),
+          imp = Math.abs(this.imag).toPrecision(precision);
+
+        return `( ${rep} | ${sgn}${imp}j )`;
+    }
+
+    /**
+     * Returns a string representation of this complex number.
+     * @return {string} A string representation of this complex number.
+     */
+    toString() {
+        return this.$();
+    }
+
+    /**
+     * Returns the name of the constructor of this complex number.
+     * @return {string} The name of the constructor of this complex number.
+     */
+    get [Symbol.toStringTag]() {
+        return this.constructor.name;
+    }
+
+    /**
+     * Converts this complex number to a primitive value.
+     * @param {'default' | 'number' | 'string'} hint Type hint for conversion.
+     * @return {number | string} The primitive value of this complex number.
+     */
+    [Symbol.toPrimitive](hint) {
+        return hint == 'number' ? this.real : this.toString();
+    }
+
+    /**
+     * Gets an iterator for the real and imaginary parts of this complex number.
+     * @generator
+     * @yield {number}
+     * @return {IterableIterator&lt;number>}
+     * An iterator for the real and imaginary parts of this complex number.
+     */
+    *[Symbol.iterator]() {
+        yield this.real;
+        yield this.imag;
+    }
+}
+
+/**
+ * Compute the absolute value (modulus or magnitude) of this complex number.
+ * @method mod
+ * @memberof Complex
+ * @instance
+ * @return {number} The absolute length value of this complex number.
+ */
+Complex.prototype.mod = Complex.prototype.abs;
+
+/**
+ * Compute the squared absolute value of this complex number.
+ * @method modSq
+ * @memberof Complex
+ * @instance
+ * @return {number} The squared absolute value of this complex number.
+ */
+Complex.prototype.modSq = Complex.prototype.abs_squared;
+
+// Freeze the Complex class to prevent further modifications to
+// its static properties &amp; methods:
+Object.freeze(Complex);
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="Complex.html">Complex</a></li><li><a href="module.exports_module.exports.html">exports</a></li></ul><h3>Global</h3><ul><li><a href="global.html#$">$</a></li><li><a href="global.html#_ctor">_ctor</a></li><li><a href="global.html#_isComplex">_isComplex</a></li><li><a href="global.html#_new">_new</a></li><li><a href="global.html#abs">abs</a></li><li><a href="global.html#abs_squared">abs_squared</a></li><li><a href="global.html#acos">acos</a></li><li><a href="global.html#acosh">acosh</a></li><li><a href="global.html#add">add</a></li><li><a href="global.html#arg">arg</a></li><li><a href="global.html#arrClone">arrClone</a></li><li><a href="global.html#asin">asin</a></li><li><a href="global.html#asinh">asinh</a></li><li><a href="global.html#atan">atan</a></li><li><a href="global.html#atanh">atanh</a></li><li><a href="global.html#cbrt">cbrt</a></li><li><a href="global.html#clone">clone</a></li><li><a href="global.html#compare">compare</a></li><li><a href="global.html#compareTo">compareTo</a></li><li><a href="global.html#conj">conj</a></li><li><a href="global.html#cos">cos</a></li><li><a href="global.html#cosec">cosec</a></li><li><a href="global.html#cosech">cosech</a></li><li><a href="global.html#cosh">cosh</a></li><li><a href="global.html#cot">cot</a></li><li><a href="global.html#coth">coth</a></li><li><a href="global.html#cubed">cubed</a></li><li><a href="global.html#div">div</a></li><li><a href="global.html#epsilon">epsilon</a></li><li><a href="global.html#equals">equals</a></li><li><a href="global.html#exp">exp</a></li><li><a href="global.html#filterRealRoots">filterRealRoots</a></li><li><a href="global.html#fromPolar">fromPolar</a></li><li><a href="global.html#fromRI">fromRI</a></li><li><a href="global.html#fromRandom">fromRandom</a></li><li><a href="global.html#fromZ">fromZ</a></li><li><a href="global.html#half">half</a></li><li><a href="global.html#hashCode">hashCode</a></li><li><a href="global.html#isReal">isReal</a></li><li><a href="global.html#isZero">isZero</a></li><li><a href="global.html#log">log</a></li><li><a href="global.html#mult">mult</a></li><li><a href="global.html#negate">negate</a></li><li><a href="global.html#norm">norm</a></li><li><a href="global.html#pow">pow</a></li><li><a href="global.html#print">print</a></li><li><a href="global.html#removeDuplicates">removeDuplicates</a></li><li><a href="global.html#roots">roots</a></li><li><a href="global.html#sin">sin</a></li><li><a href="global.html#sinh">sinh</a></li><li><a href="global.html#sort">sort</a></li><li><a href="global.html#sqrt">sqrt</a></li><li><a href="global.html#squared">squared</a></li><li><a href="global.html#sub">sub</a></li><li><a href="global.html#tan">tan</a></li><li><a href="global.html#tanh">tanh</a></li><li><a href="global.html#toDeg">toDeg</a></li><li><a href="global.html#toRad">toRad</a></li><li><a href="global.html#toString">toString</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.2</a> on Mon Sep 04 2023 03:28:08 GMT-0300 (GMT-03:00)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

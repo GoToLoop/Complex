@@ -1,0 +1,30 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ES2022",
+    "allowJs": true,
+    "newLine": "lf",
+    "noImplicitOverride": true,
+    "declaration": true,
+    "emitDeclarationOnly": true,
+    "declarationDir": "typings",
+    "outDir": "dist",
+    "strict": true
+  },
+
+  "files": ["complex.mjs"],
+
+  "exclude": ["docs", "scripts", "tests", "typings", "node_modules"],
+
+  "typedocOptions": {
+    "entryPoints": ["complex.mjs"],
+    "out": "docs/tsdoc",
+
+    "visibilityFilters": {
+      "protected": true,
+      "private": true,
+      "inherited": true,
+      "external": true
+    }
+  }
+}
