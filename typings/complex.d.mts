@@ -607,14 +607,21 @@ export default class Complex {
     /**
      * Returns a string representation of this complex number.
      * @param {number} [precision=16] Number of significant digits to display.
+     * @param {string} [$=''] Extra info to append to the string representation.
      * @return {string} A string representation of this complex number.
      */
-    $(precision?: number | undefined): string;
+    $(precision?: number | undefined, $?: string | undefined): string;
     /**
      * Returns a string representation of this complex number.
      * @return {string} A string representation of this complex number.
      */
     toString(): string;
+    /**
+     * Resets to default values both #hashCode & #$ internal caches.
+     * @return {this} This complex number.
+     * @chainable
+     */
+    resetCaches(): this;
     /**
      * Compute the absolute value (modulus or magnitude) of this complex number.
      * @method mod

@@ -24,7 +24,7 @@
 
  > Last updated: 16 Aug 2023
 
- > @author Peter Lager (2023)
+ > Author: Peter Lager (2023)
 
  > https://Discourse.Processing.org/t/
  > sketch-tool-linking-js-files-from-another-server/42582
@@ -36,4 +36,4 @@
 https://GitHub.com/GoToLoop/Complex
 
 ## Docs
-https://GoToLoop.GitHub.io/Complex/docs
+https://GoToLoop.GitHub.io/Complex

@@ -68,6 +68,12 @@ export default class Complex {
     #hashCode = null;
 
     /**
+     * The cached string representation for this complex number.
+     * @type {string | null}
+     */
+    #$ = null;
+
+    /**
      * Create a new instance of the Complex class.
      * @constructor
      * @param {number} [re=0] The real part of the complex number.
@@ -176,7 +182,7 @@ export default class Complex {
      * @readonly
      * @const {Complex}
      */
-    static ZERO = new this;
+    static ZERO = new this().resetCaches();
 
     /**
      * A complex number representing 1 + 0i.
@@ -184,7 +190,7 @@ export default class Complex {
      * @readonly
      * @const {Complex}
      */
-    static _1_0i = new this(1, 0);
+    static _1_0i = new this(1, 0).resetCaches();
 
     /**
      * A complex number representing -1 + 0i.
@@ -192,7 +198,7 @@ export default class Complex {
      * @readonly
      * @const {Complex}
      */
-    static _1_0i_neg = new this(-1, 0);
+    static _1_0i_neg = new this(-1, 0).resetCaches();
 
     /**
      * A complex number representing 0 + 1i.
@@ -200,7 +206,7 @@ export default class Complex {
      * @readonly
      * @const {Complex}
      */
-    static _0_1i = new this(0, 1);
+    static _0_1i = new this(0, 1).resetCaches();
 
     /**
      * A complex number representing 0 - 1i.
@@ -208,7 +214,7 @@ export default class Complex {
      * @readonly
      * @const {Complex}
      */
-    static _0_1i_neg = new this(0, -1);
+    static _0_1i_neg = new this(0, -1).resetCaches();
 
     /**
      * Pi. Ratio of the circumference of a circle to its diameter.
@@ -596,7 +602,7 @@ export default class Complex {
      * values as this instance.
      */
     clone() {
-        return new this.constructor(...this);
+        return new this.constructor(...this).resetCaches();
     }
 
     /**
@@ -943,15 +949,18 @@ export default class Complex {
     /**
      * Returns a string representation of this complex number.
      * @param {number} [precision=16] Number of significant digits to display.
+     * @param {string} [$=''] Extra info to append to the string representation.
      * @return {string} A string representation of this complex number.
      */
-    $(precision = 16) {
+    $(precision = 0, $ = '') {
+        if (!precision && !$ && this.#$ != null) return this.#$;
+
         const
           sgn = this.imag < 0 && '-' || '+',
-          rep = this.real.toPrecision(precision),
+          rep = this.real.toPrecision(precision ||= 16),
           imp = Math.abs(this.imag).toPrecision(precision);
 
-        return `( ${rep} | ${sgn}${imp}j )`;
+        return this.#$ = `( ${rep} | ${sgn}${imp}j )${$}`;
     }
 
     /**
@@ -960,6 +969,17 @@ export default class Complex {
      */
     toString() {
         return this.$();
+    }
+
+    /**
+     * Resets to default values both #hashCode & #$ internal caches.
+     * @return {this} This complex number.
+     * @chainable
+     */
+    resetCaches() {
+        this.hashCode(17);
+        this.$(16, '');
+        return this;
     }
 
     /**
