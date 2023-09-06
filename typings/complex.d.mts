@@ -177,6 +177,8 @@ export default class Complex {
     static readonly DEG_TO_RAD: 0.017453292519943295;
     /**
      * The default maximum difference allowed when testing complex numbers.
+     * @type {number}
+     * @default
      */
     static "__#1@#epsilon": number;
     /**
@@ -348,14 +350,14 @@ export default class Complex {
      * The real part of the complex number.
      * @readonly
      * @const
-     * @type {number}
+     * @member {number}
      */
     readonly real: number;
     /**
      * The imaginary part of the complex number.
      * @readonly
      * @const
-     * @type {number}
+     * @member {number}
      */
     readonly imag: number;
     /**

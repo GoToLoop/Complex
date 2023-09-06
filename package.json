@@ -5,17 +5,19 @@
   "license": "MIT",
   "description": "A complex number class including many trig functions.",
   "main": "complex.js",
+  "browser": "complex.js",
   "module": "complex.mjs",
   "types": "typings/complex.d.mts",
   "scripts": {
     "preinstall": "cd scripts && dev-packs",
-    "start": "cd scripts && run",
     "test": "node tests/test.mjs",
-    "check": "tsd -f tests/complex.test-d.mts",
+    "start": "cd scripts && run-docs",
+    "server": "cd scripts && run",
     "compile": "tsc",
+    "check": "tsd -f tests/complex.test-d.mts",
     "tsdoc": "typedoc",
     "jsdoc": "jsdoc -c jsdoc.json",
-    "all": "run-s compile check && run-p tsdoc jsdoc"
+    "all": "npm-run-all -cl test compile check -p tsdoc jsdoc"
   },
   "engines": {
     "node": ">=18"

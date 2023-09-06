@@ -78,7 +78,7 @@ export default class Complex {
          * The real part of the complex number.
          * @readonly
          * @const
-         * @type {number}
+         * @member {number}
          */
         this.real = +re || 0;
 
@@ -86,7 +86,7 @@ export default class Complex {
          * The imaginary part of the complex number.
          * @readonly
          * @const
-         * @type {number}
+         * @member {number}
          */
         this.imag = +im || 0;
 
@@ -244,6 +244,8 @@ export default class Complex {
 
     /**
      * The default maximum difference allowed when testing complex numbers.
+     * @type {number}
+     * @default
      */
     static #epsilon = 1E-8;
 

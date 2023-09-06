@@ -3,9 +3,7 @@
 
 "use strict";
 
-void function checkComplex(fun) {
-  'Complex' in globalThis ? fun() : setTimeout(checkComplex, 1000, fun);
-}(start);
+callWhenComplexReady(start);
 
 function start() {
   class C extends Complex {uyt = 10; static C() {return this._new()}}
