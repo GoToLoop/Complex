@@ -33,7 +33,7 @@ import('./complex.mjs').then(({ default: c }) => {
 /**
  * This function checks if the 'Complex' class is available in the global
  * scope. If it is, it calls the provided callback function with the 'Complex'
- * class as an argument. If it's not available, it sets a timeout to check
+ * class as the argument. If it's not available, it sets a timeout to check
  * again after 1 second.
  *
  * @param {complexReadyCallback=} callback The callback function to be called
