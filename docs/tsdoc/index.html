@@ -12,52 +12,38 @@
 <div class="col-content">
 <div class="tsd-page-title">
 <h2>complex</h2></div>
-<div class="tsd-panel tsd-typography"><blockquote>
-<p>A complex number class including many trig functions.</p>
-</blockquote>
+<div class="tsd-panel tsd-typography"><a id="md:complex-number-class-🔢" class="tsd-anchor"></a><h1><a href="#md:complex-number-class-🔢">Complex Number Class 🔢</a></h1><p>This class includes many trig functions and is <strong>immutable</strong>. None of its
+methods will change the real or imaginary components, instead, they return
+new complex objects.</p>
+<p>To retrieve the real and imaginary parts of the complex number <code>z</code>, use
+<code>z.real</code> and <code>z.imag</code>.</p>
+<a id="md:method-chaining-🔗" class="tsd-anchor"></a><h2><a href="#md:method-chaining-🔗">Method Chaining 🔗</a></h2><p>Most methods can be chained. For example, <code>z.tan().sqrt()</code> will calculate
+and return the square root of the tangent of <code>z</code>. In mathematics, we are
+evaluating <code>sqrt(tan(z))</code> leaving <code>z</code> unchanged.</p>
+<a id="md:floating-point-errors-🔍" class="tsd-anchor"></a><h2><a href="#md:floating-point-errors-🔍">Floating Point Errors 🔍</a></h2><p>In some situations, floating point errors can be significant. Testing for
+equality or to see if the number represents a real value can be problematic.
+By default, the maximum permitted difference is <code>10^-8</code>, but in some
+situations, this may be too restrictive and reject values you wish to
+consider equal. Use accessor <code>Complex.epsilon</code> to change the static
+<code>#epsilon</code> property&#39;s default value.</p>
 <blockquote>
-<p>This class is immutable in that none of its methods will change the
-real or imaginary components, instead they return new complex objects.</p>
+<p>⚠️ Notice that b/c <code>Complex.epsilon</code> is a static property, changing it affects
+all instances of class <code>Complex</code>. As a workaround, all methods which rely on it
+accept an optional <code>epsilon</code> argument to be used in the test, thus ignoring the
+global static value.</p>
 </blockquote>
-<blockquote>
-<p>Although the user can access the class attributes directly it is not
-recommended as it can lead to unpredictable behaviour.</p>
-</blockquote>
-<blockquote>
-<p>To retrieve the real and impaginary parts of the complex number z use
-z.real and z.imag</p>
-</blockquote>
-<blockquote>
-<p>Note that most methods can be chained, e.g. z.tan().sqrt();</p>
-</blockquote>
-<blockquote>
-<p>This will calculate and return the square root of the tangent of z.
-In mathematics we are evaluating sqrt(tan(z)) leaving z unchanged.</p>
-</blockquote>
-<blockquote>
-<p>In some situations floating point errors can be significant; so testing
-for equality or to see if the number represents a real value can be
-problematic. By default, the maximum permitted difference is 10^-8,
-but in some situations this may be too restrictive and reject values you
-wish to consider equal. Use accessor Complex.epsilon to change the static
-#epsilon property. Alternatively some methods accept an epsilon argument
-to be used in the test, leaving the global static value unchanged.</p>
-</blockquote>
-<blockquote>
-<p>Last updated: 16 Aug 2023</p>
-</blockquote>
-<blockquote>
-<p>Author: Peter Lager (2023)</p>
-</blockquote>
-<blockquote>
-<p><a href="https://Discourse.Processing.org/t/">https://Discourse.Processing.org/t/</a>
-sketch-tool-linking-js-files-from-another-server/42582</p>
-</blockquote>
-<blockquote>
-<p><a href="http://Lagers.org.uk/libs/_files/math/complex.js">http://Lagers.org.uk/libs/_files/math/complex.js</a></p>
-</blockquote>
-<a id="md:complex" class="tsd-anchor"></a><h2><a href="#md:complex">Complex</a></h2><p><a href="https://GitHub.com/GoToLoop/Complex">https://GitHub.com/GoToLoop/Complex</a></p>
-<a id="md:docs" class="tsd-anchor"></a><h2><a href="#md:docs">Docs</a></h2><p><a href="https://GoToLoop.GitHub.io/Complex">https://GoToLoop.GitHub.io/Complex</a></p>
+<a id="md:additional-information-ℹ️" class="tsd-anchor"></a><h2><a href="#md:additional-information-ℹ️">Additional Information ℹ️</a></h2><ul>
+<li><p>Last updated: 16 Aug 2023</p>
+</li>
+<li><p>Author: Peter Lager (2023)</p>
+</li>
+<li><p>Refactored by GoToLoop</p>
+</li>
+<li><p><a href="https://GitHub.com/GoToLoop/Complex">Complex on GitHub</a></p>
+</li>
+<li><p><a href="https://GoToLoop.GitHub.io/Complex">Documentation</a></p>
+</li>
+</ul>
 </div></div>
 <div class="col-sidebar">
 <div class="page-menu">
@@ -80,10 +66,12 @@ sketch-tool-linking-js-files-from-another-server/42582</p>
 <ul>
 <li>
 <ul>
-<li><a href="#md:complex"><span>Complex</span></a></li>
+<li><a href="#md:complex-number-class-🔢"><span>Complex <wbr/>Number <wbr/>Class 🔢</span></a></li>
 <li>
 <ul>
-<li><a href="#md:docs"><span>Docs</span></a></li></ul></li></ul></li></ul></div></details></div>
+<li><a href="#md:method-chaining-🔗"><span>Method <wbr/>Chaining 🔗</span></a></li>
+<li><a href="#md:floating-point-errors-🔍"><span>Floating <wbr/>Point <wbr/>Errors 🔍</span></a></li>
+<li><a href="#md:additional-information-ℹ️"><span>Additional <wbr/>Information ℹ️</span></a></li></ul></li></ul></li></ul></div></details></div>
 <div class="site-menu">
 <nav class="tsd-navigation"><a href="modules.html" class="current"><svg class="tsd-kind-icon" viewBox="0 0 24 24"><g id="icon-4"><rect fill="var(--color-icon-background)" stroke="var(--color-ts-namespace)" stroke-width="1.5" x="1" y="1" width="22" height="22" rx="6"></rect><path d="M9.33 16V7.24H10.77L13.446 14.74C13.43 14.54 13.41 14.296 13.386 14.008C13.37 13.712 13.354 13.404 13.338 13.084C13.33 12.756 13.326 12.448 13.326 12.16V7.24H14.37V16H12.93L10.266 8.5C10.282 8.692 10.298 8.936 10.314 9.232C10.33 9.52 10.342 9.828 10.35 10.156C10.366 10.476 10.374 10.784 10.374 11.08V16H9.33Z" fill="var(--color-text)"></path></g></svg><span>complex</span></a>
 <ul class="tsd-small-nested-navigation">
