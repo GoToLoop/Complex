@@ -1,39 +1,37 @@
- > A complex number class including many trig functions.
+# Complex Number Class 🔢
 
- > This class is immutable in that none of its methods will change the
- > real or imaginary components, instead they return new complex objects.
+This class includes many trig functions and is **immutable**. None of its
+methods will change the real or imaginary components, instead, they return
+new complex objects.
 
- > Although the user can access the class attributes directly it is not
- > recommended as it can lead to unpredictable behaviour.
+To retrieve the real and imaginary parts of the complex number `z`, use
+`z.real` and `z.imag`.
 
- > To retrieve the real and impaginary parts of the complex number z use
- > z.real and z.imag
+## Method Chaining 🔗
 
- > Note that most methods can be chained, e.g. z.tan().sqrt();
+Most methods can be chained. For example, `z.tan().sqrt()` will calculate
+and return the square root of the tangent of `z`. In mathematics, we are
+evaluating `sqrt(tan(z))` leaving `z` unchanged.
 
- > This will calculate and return the square root of the tangent of z.
- > In mathematics we are evaluating sqrt(tan(z)) leaving z unchanged.
+## Floating Point Errors 🔍
 
- > In some situations floating point errors can be significant; so testing
- > for equality or to see if the number represents a real value can be
- > problematic. By default, the maximum permitted difference is 10^-8,
- > but in some situations this may be too restrictive and reject values you
- > wish to consider equal. Use accessor Complex.epsilon to change the static
- > #epsilon property. Alternatively some methods accept an epsilon argument
- > to be used in the test, leaving the global static value unchanged.
+In some situations, floating point errors can be significant. Testing for
+equality or to see if the number represents a real value can be problematic.
+By default, the maximum permitted difference is `10^-8`, but in some
+situations, this may be too restrictive and reject values you wish to
+consider equal. Use accessor `Complex.epsilon` to change the static
+`#epsilon` property's default value.
 
- > Last updated: 16 Aug 2023
+> ⚠️ Notice that b/c `Complex.epsilon` is a static property, changing it affects
+all instances of class `Complex`. As a workaround, all methods which rely on it
+accept an optional `epsilon` argument to be used in the test, thus ignoring the
+global static value.
 
- > Author: Peter Lager (2023)
+## Additional Information ℹ️
 
- > https://Discourse.Processing.org/t/
- > sketch-tool-linking-js-files-from-another-server/42582
+- Last updated: 16 Aug 2023
+- Author: Peter Lager (2023)
+- Refactored by GoToLoop
 
- > http://Lagers.org.uk/libs/_files/math/complex.js
-
-
-## Complex
-https://GitHub.com/GoToLoop/Complex
-
-## Docs
-https://GoToLoop.GitHub.io/Complex
+- [Complex on GitHub](https://GitHub.com/GoToLoop/Complex)
+- [Documentation](https://GoToLoop.GitHub.io/Complex)

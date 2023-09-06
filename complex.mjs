@@ -230,7 +230,7 @@ export default class Complex {
      * @readonly
      * @const {6.283185307179586}
      */
-    static TAU = /** @type {6.283185307179586} */ (2 * Complex.PI);
+    static TAU = /** @type {6.283185307179586} */ (2 * this.PI);
 
     /**
      * The conversion factor from radians to degrees (180 / Math.PI).
@@ -238,7 +238,7 @@ export default class Complex {
      * @readonly
      * @const {57.29577951308232}
      */
-    static RAD_TO_DEG = /** @type {57.29577951308232} */ (180 / Complex.PI);
+    static RAD_TO_DEG = /** @type {57.29577951308232} */ (180 / this.PI);
 
     /**
      * The conversion factor from degrees to radians (Math.PI / 180).
@@ -246,7 +246,7 @@ export default class Complex {
      * @readonly
      * @const {.017453292519943295}
      */
-    static DEG_TO_RAD = /** @type {.017453292519943295} */ (Complex.PI / 180);
+    static DEG_TO_RAD = /** @type {.017453292519943295} */ (this.PI / 180);
 
     /**
      * The default maximum difference allowed when testing complex numbers.
