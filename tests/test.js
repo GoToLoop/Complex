@@ -3,7 +3,7 @@
 
 "use strict";
 
-callWhenComplexReady(start);
+callMeWhenComplexReady(start).then(console.info);
 
 function start() {
   class C extends Complex {uyt = 10; static C() {return this._new()}}

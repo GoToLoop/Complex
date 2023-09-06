@@ -5,7 +5,7 @@ type ComplexType = typeof Complex;
 declare global {
   var Complex: ComplexType;
 
-  function callWhenComplexReady(
-    callback: (c: ComplexType) => void
-  ): { Complex: ComplexType | null };
+  function callMeWhenComplexReady(
+    callback?: (c: ComplexType) => void
+  ): Promise<ComplexType>;
 }

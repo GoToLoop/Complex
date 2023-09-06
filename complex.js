@@ -1,4 +1,5 @@
 // @ts-check
+/// <reference path="./typings/complex.d.ts" />
 
 /**
  * @fileoverview This file imports Complex class & makes it globally available.
@@ -6,13 +7,13 @@
 
 /**
  * Represents the default export of the './complex.mjs' module, which is the
- * 'Complex' class.
+ * 'Complex' class constructor.
  * @typedef {typeof import('./complex.mjs').default} Ctor
  */
 
 import('./complex.mjs').then(({ default: c }) => {
     /**
-     * An immutable complex number with real and imaginary parts.
+     * An immutable complex number class with real and imaginary parts.
      * @global
      * @var {Ctor} Complex
      */
@@ -21,11 +22,11 @@ import('./complex.mjs').then(({ default: c }) => {
 });
 
 /**
- * This callback is called when the 'Complex' class is ready and available in
- * the global scope.
+ * This callback is invoked when the 'Complex' class is ready & available
+ * in the global scope.
  *
- * @callback callWhenComplexReadyCallback
- * @param {Ctor} Complex The 'Complex' class.
+ * @callback complexReadyCallback
+ * @param {Ctor} Complex The 'Complex' class constructor when ready.
  * @return {void}
  */
 
@@ -35,22 +36,25 @@ import('./complex.mjs').then(({ default: c }) => {
  * class as an argument. If it's not available, it sets a timeout to check
  * again after 1 second.
  *
- * @param {callWhenComplexReadyCallback} callback The callback function to be
- * called when 'Complex' is ready.
- * @return {{ Complex: Ctor | null }} An object containing the 'Complex' class,
- * or null if it's not available yet.
+ * @param {complexReadyCallback=} callback The callback function to be called
+ * when 'Complex' is ready.
+ * @return {Promise<Ctor>} A `Promise` which resolves as the 'Complex' class.
  */
-function callWhenComplexReady(callback) {
+function callMeWhenComplexReady(callback) {
     /**
-     * An object w/ the 'Complex' class, or null if it's not available yet.
-     * @type {{ Complex: Ctor | null }} objC
+     * This inner function checks if the 'Complex' class is available in the
+     * global scope. If it is, it resolves the promise with the 'Complex' class
+     * and then calls the provided callback function with the 'Complex' class
+     * as the argument. Otherwise, it sets a timeout to check again after 1s.
+     * @param {(value: Ctor) => void} res
+     * @return {void}
      */
-    const objC = { Complex: null };
+    function executor(res) {
+        if ('Complex' in globalThis) return res(Complex), callback?.(Complex);
+        setTimeout(executor, 1000, res);
+    }
 
-    'Complex' in globalThis ? callback(objC.Complex = globalThis.Complex)
-                            : setTimeout(callWhenComplexReady, 1000, callback);
-
-    return objC;
+    return new Promise(executor);
 }
 
 /*
