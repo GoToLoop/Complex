@@ -1,10 +1,13 @@
 #!/bin/sh
 
+sudo npm -g ls cross-env || npm -g i cross-env
 sudo npm -g ls npm-run-all || npm -g i npm-run-all
 sudo npm -g ls servor || npm -g i servor
 sudo npm -g ls typescript || npm -g i typescript
 sudo npm -g ls jsdoc || npm -g i jsdoc
 sudo npm -g ls typedoc || npm -g i typedoc
+sudo npm -g ls jest || npm -g i jest
+sudo npm -g ls @jest/globals || npm -g i @jest/globals
 sudo npm -g ls tsd || npm -g i tsd
 
-npm ln tsd
+npm ln tsd @jest/globals

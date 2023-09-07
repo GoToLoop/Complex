@@ -10,13 +10,15 @@
   "types": "typings/complex.d.mts",
   "scripts": {
     "preinstall": "cd scripts && dev-packs",
-    "test": "node tests/test.mjs",
+    "test": "cd scripts && test",
     "start": "cd scripts && run-docs",
     "server": "cd scripts && run",
     "compile": "tsc",
     "check": "tsd -f tests/complex.test-d.mts",
+    "checks": "run-p -cl compile test check",
     "tsdoc": "typedoc",
     "jsdoc": "jsdoc -c jsdoc.json",
+    "docs": "run-p -cl tsdoc jsdoc",
     "all": "npm-run-all -cl test compile check -p tsdoc jsdoc"
   },
   "engines": {
@@ -25,14 +27,20 @@
   "devDependencies": {
   },
   "peerDependencies": {
+    "cross-env": "^7",
     "npm-run-all": "^4",
     "servor": "^4",
     "typescript": "^5",
     "jsdoc": "^4",
     "typedoc": "^1",
+    "jest": "^29",
+    "@jest/globals": "^29",
     "tsd": "x"
   },
   "peerDependenciesMeta": {
+    "cross-env": {
+      "optional": true
+    },
     "npm-run-all": {
       "optional": true
     },
@@ -48,8 +56,19 @@
     "typedoc": {
       "optional": true
     },
+    "jest": {
+      "optional": true
+    },
+    "@jest/globals": {
+      "optional": true
+    },
     "tsd": {
       "optional": true
     }
+  },
+  "jest": {
+    "testMatch": ["**/tests/**/*.jest.mjs"],
+    "transform": {},
+    "collectCoverage": true
   }
 }

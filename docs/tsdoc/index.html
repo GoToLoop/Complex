@@ -22,22 +22,22 @@ and return the square root of the tangent of <code>z</code>. In mathematics, we 
 evaluating <code>sqrt(tan(z))</code> leaving <code>z</code> unchanged.</p>
 <a id="md:floating-point-errors-🔍" class="tsd-anchor"></a><h2><a href="#md:floating-point-errors-🔍">Floating Point Errors 🔍</a></h2><p>In some situations, floating point errors can be significant. Testing for
 equality or to see if the number represents a real value can be problematic.
-By default, the maximum permitted difference is <code>10^-8</code>, but in some
+By default, the maximum permitted difference is <code>10^-8</code>; but in some
 situations, this may be too restrictive and reject values you wish to
 consider equal. Use accessor <code>Complex.epsilon</code> to change the static
 <code>#epsilon</code> property&#39;s default value.</p>
 <blockquote>
-<p>⚠️ Notice that b/c <code>Complex.epsilon</code> is a static property, changing it affects
+<p>⚠️ Notice that b/c <code>Complex.epsilon</code> is a static accessor, changing it affects
 all instances of class <code>Complex</code>. As a workaround, all methods which rely on it
 accept an optional <code>epsilon</code> argument to be used in the test, thus ignoring the
-global static value.</p>
+global static default value.</p>
 </blockquote>
 <a id="md:additional-information-ℹ️" class="tsd-anchor"></a><h2><a href="#md:additional-information-ℹ️">Additional Information ℹ️</a></h2><ul>
 <li><p>Last updated: 16 Aug 2023</p>
 </li>
 <li><p>Author: Peter Lager (2023)</p>
 </li>
-<li><p>Refactored by GoToLoop</p>
+<li><p>Refactored by GoToLoop (2023)</p>
 </li>
 <li><p><a href="https://GitHub.com/GoToLoop/Complex">Complex on GitHub</a></p>
 </li>

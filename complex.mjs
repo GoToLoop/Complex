@@ -58,6 +58,7 @@
 
 /**
  * An immutable complex number class with real and imaginary parts.
+ * @name Complex
  * @class Complex
  */
 export default class Complex {
@@ -1018,6 +1019,7 @@ export default class Complex {
  * @memberof Complex
  * @instance
  * @return {number} The absolute length value of this complex number.
+ * @description Alias of Complex::abs().
  */
 Complex.prototype.mod = Complex.prototype.abs;
 
@@ -1027,8 +1029,20 @@ Complex.prototype.mod = Complex.prototype.abs;
  * @memberof Complex
  * @instance
  * @return {number} The squared absolute value of this complex number.
+ * @description Alias of Complex::abs_squared().
  */
 Complex.prototype.modSq = Complex.prototype.abs_squared;
+
+/**
+ * Multiplies this complex number by another complex number or a scalar.
+ * @method mul
+ * @memberof Complex
+ * @instance
+ * @param {(Cobj | number)} n The multiplicand.
+ * @return {this} The product of the multiplication.
+ * @description Alias of Complex::mult().
+ */
+Complex.prototype.mul = Complex.prototype.mult;
 
 // Freeze the Complex class to prevent further modifications to
 // its static properties & methods:

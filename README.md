@@ -17,21 +17,21 @@ evaluating `sqrt(tan(z))` leaving `z` unchanged.
 
 In some situations, floating point errors can be significant. Testing for
 equality or to see if the number represents a real value can be problematic.
-By default, the maximum permitted difference is `10^-8`, but in some
+By default, the maximum permitted difference is `10^-8`; but in some
 situations, this may be too restrictive and reject values you wish to
 consider equal. Use accessor `Complex.epsilon` to change the static
 `#epsilon` property's default value.
 
-> ⚠️ Notice that b/c `Complex.epsilon` is a static property, changing it affects
+> ⚠️ Notice that b/c `Complex.epsilon` is a static accessor, changing it affects
 all instances of class `Complex`. As a workaround, all methods which rely on it
 accept an optional `epsilon` argument to be used in the test, thus ignoring the
-global static value.
+global static default value.
 
 ## Additional Information ℹ️
 
 - Last updated: 16 Aug 2023
 - Author: Peter Lager (2023)
-- Refactored by GoToLoop
+- Refactored by GoToLoop (2023)
 
 - [Complex on GitHub](https://GitHub.com/GoToLoop/Complex)
 - [Documentation](https://GoToLoop.GitHub.io/Complex)
