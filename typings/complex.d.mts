@@ -247,14 +247,13 @@ export default class Complex {
     static arrClone<A>(arr: Iterable<A>): A[];
     /**
      * Check if a function is a Complex datatype constructor.
-     * @protected
      * @static
      * @template {Ctor<TC>} C Extends typeof Complex.
      * @param {Cvoid<C>} c The constructor function to check.
      * @return {c is Newable<Cinst<C>>}
      * True if param c is or inherits from Complex class.
      */
-    protected static _isComplex<C extends TC>(c: Cvoid<C>): c is Newable<InstanceType<C>>;
+    static isComplex<C extends TC>(c: Cvoid<C>): c is Newable<InstanceType<C>>;
     /**
      * Get input constructor c if typeof Complex; or fallback to Complex.
      * @protected

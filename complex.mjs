@@ -350,14 +350,13 @@ export default class Complex {
 
     /**
      * Check if a function is a Complex datatype constructor.
-     * @protected
      * @static
      * @template {Ctor<TC>} C Extends typeof Complex.
      * @param {Cvoid<C>} c The constructor function to check.
      * @return {c is Newable<Cinst<C>>}
      * True if param c is or inherits from Complex class.
      */
-    static _isComplex(c) {
+    static isComplex(c) {
         return !!c && Complex._METHOD in c;
     }
 
@@ -371,7 +370,7 @@ export default class Complex {
      * @return {N} Param c if type Complex; otherwise a Complex constructor.
      */
     static _ctor(c) {
-        return /** @type {N} */ (Complex._isComplex(c) ? c : this || Complex);
+        return /** @type {N} */ (Complex.isComplex(c) ? c : this || Complex);
     }
 
     /**

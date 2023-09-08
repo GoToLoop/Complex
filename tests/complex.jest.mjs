@@ -13,8 +13,6 @@ class Complexed extends Complex {
 
   static hashFBuf = super._hashFBuf;
   static hashIBuf = super._hashIBuf;
-
-  static isComplex = this._isComplex;
 }
 
 describe('Complex', () => {
@@ -375,14 +373,14 @@ describe('Static properties', () => {
     });
   });
 
-  describe('_isComplex', () => {
+  describe('isComplex', () => {
     it('should return true if constructor is a Complex constructor', () => {
       expect(Complexed.isComplex(Complex)).toBe(true);
-      expect(Complexed.isComplex(Complexed)).toBe(true);
+      expect(Complex.isComplex(Complexed)).toBe(true);
     });
 
     it("should return false if constructor isn't a Complex constructor", () => {
-      expect(Complexed.isComplex(Array)).toBe(false);
+      expect(Complex.isComplex(Array)).toBe(false);
     });
   });
 });
