@@ -75,7 +75,7 @@
     }
   },
   "jest": {
-    "testMatch": ["**/tests/**/*.jest.mjs"],
+    "testMatch": ["**/*.{test,spec}.?(c|m)js"],
     "transform": {},
     "collectCoverage": true
   }
