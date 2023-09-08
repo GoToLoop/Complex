@@ -39,7 +39,7 @@ describe('Complex', () => {
       expect(result.imag).toBe(6);
     });
 
-    it('should add a complex number and a real number', () => {
+    it('should add the real part of a complex and a real number', () => {
       const complex = new Complex(1, 2);
       const result = complex.add(3);
       expect(result.real).toBe(4);
@@ -56,7 +56,7 @@ describe('Complex', () => {
       expect(result.imag).toBe(-2);
     });
 
-    it('should subtract a complex number and a real number', () => {
+    it('should subtract the real part of a complex and a real number', () => {
       const complex = new Complex(1, 2);
       const result = complex.sub(3);
       expect(result.real).toBe(-2);
