@@ -10,9 +10,10 @@
   "types": "typings/complex.d.mts",
   "keywords": [
     "complex", "cmath", "trig", "trigonometry",
-    "jsdoc", "tsdoc", "jest", "tsd",
-    "hashcode", "equality", "epsilon", "iterator",
-    "this", "polymorphic", "polymorphism", "subclass",
+    "jsdocs", "tsdocs", "jest", "tsd",
+    "hashcode", "equality", "epsilon",
+    "iterator", "comparator",
+    "this", "polymorphic", "polymorphism", "subclasses",
     "esm", "mjs", "mts"
   ],
   "scripts": {
