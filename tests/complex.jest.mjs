@@ -1,6 +1,6 @@
 // @ts-check
 
-/// <reference path="../node_modules/@jest/globals/build/index.d.ts" />
+/// <reference types="@jest/globals" />
 
 import Complex from '../complex.mjs';
 
