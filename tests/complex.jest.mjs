@@ -191,8 +191,13 @@ describe('Complex', () => {
     it('should clone a complex number, keeping same hashcode & string', () => {
       const complex = new Complex(Math.SQRT1_2, Math.LN2);
       const result = complex.clone();
+
+      expect(result).not.toBe(complex);
+      expect(result).toEqual(complex);
+
       expect(result.real).toBe(Math.SQRT1_2);
       expect(result.imag).toBe(Math.LN2);
+
       expect(result.hashCode()).toBe(complex.hashCode());
       expect(result.$()).toBe(complex.toString());
     });
