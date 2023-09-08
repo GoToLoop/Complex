@@ -11,7 +11,8 @@
   "keywords": [
     "complex", "cmath", "trig", "trigonometry",
     "jsdoc", "tsdoc", "jest", "tsd",
-    "hashcode", "iterator",
+    "hashcode", "equality", "epsilon", "iterator",
+    "this", "polymorphic", "polymorphism", "subclass",
     "esm", "mjs", "mts"
   ],
   "scripts": {
