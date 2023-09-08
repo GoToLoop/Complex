@@ -1,4 +1,5 @@
 // @ts-check
+
 /// <reference path="../node_modules/@jest/globals/build/index.d.ts" />
 
 import Complex from '../complex.mjs';
