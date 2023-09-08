@@ -14,7 +14,7 @@
     "hashcode", "equality", "epsilon",
     "iterator", "comparator",
     "this", "polymorphic", "polymorphism", "subclasses",
-    "esm", "mjs", "mts"
+    "esmodules", "esm", "mjs", "mts"
   ],
   "scripts": {
     "preinstall": "cd scripts && dev-packs",
